@@ -108,3 +108,108 @@ window.onload = function() {
     });
   }
 };
+
+// --- Scanner Engine Configuration ---
+
+let videoStream = null;
+let scanningActive = false;
+
+// Initialize scanner if the scanner layout components exist on current page load
+window.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById("preview") && document.getElementById("scanner-canvas")) {
+    startScanner();
+  }
+});
+
+function startScanner() {
+  const video = document.getElementById("preview");
+  const statusMsg = document.getElementById("scanner-status");
+
+  scanningActive = true;
+  statusMsg.textContent = "Requesting camera access...";
+
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+    .then((stream) => {
+      videoStream = stream;
+      video.srcObject = stream;
+      video.setAttribute("playsinline", true); // Required to prevent iOS fullscreen video
+      video.play();
+      statusMsg.textContent = "Scanning for standard barcode/QR assets...";
+      requestAnimationFrame(tickScannerProcessing);
+    })
+    .catch((err) => {
+      console.error("Camera access failed: ", err);
+      statusMsg.textContent = "Error: Camera access denied or unavailable.";
+    });
+}
+
+function tickScannerProcessing() {
+  const video = document.getElementById("preview");
+  const canvasElement = document.getElementById("scanner-canvas");
+  const statusMsg = document.getElementById("scanner-status");
+
+  if (!scanningActive) return;
+
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    const canvas = canvasElement.getContext("2d");
+    canvasElement.height = video.videoHeight;
+    canvasElement.width = video.videoWidth;
+    
+    // Draw current camera matrix frame to processing layer
+    canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+    const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+    
+    // Search image array payload using jsQR
+    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: "dontInvert",
+    });
+
+    if (code && code.data) {
+      // Barcode recognized successfully
+      handleScannedData(code.data);
+      return; // Stop running the frame tick processor loop
+    }
+  }
+  
+  // Continue scanning if no code was detected in this frame
+  requestAnimationFrame(tickScannerProcessing);
+}
+
+function handleScannedData(dataValue) {
+  scanningActive = false;
+  
+  const statusMsg = document.getElementById("scanner-status");
+  const resultCard = document.getElementById("scan-result");
+  const nameDisplay = document.getElementById("scanned-name");
+  const seatDisplay = document.getElementById("scanned-seat");
+
+  statusMsg.textContent = "Barcode successfully decoded.";
+
+  // Splitting the combinedValue format: `${name}-${seat}`
+  const dataParts = dataValue.split("-");
+  
+  if (dataParts.length >= 2) {
+    const seatNumber = dataParts.pop(); // Last segment is the seat number
+    const passengerName = dataParts.join("-"); // Recombines if name itself contained dashes
+
+    nameDisplay.textContent = decodeURIComponent(passengerName);
+    seatDisplay.textContent = decodeURIComponent(seatNumber);
+  } else {
+    // Fallback display if barcode format does not contain explicit delimiter formatting
+    nameDisplay.textContent = dataValue;
+    seatDisplay.textContent = "Unknown";
+  }
+
+  // Display result panel cards
+  resultCard.style.display = "block";
+}
+
+function resetScanner() {
+  document.getElementById("scan-result").style.display = "none";
+  document.getElementById("scanned-name").textContent = "-";
+  document.getElementById("scanned-seat").textContent = "-";
+  
+  scanningActive = true;
+  document.getElementById("scanner-status").textContent = "Scanning...";
+  requestAnimationFrame(tickScannerProcessing);
+}
