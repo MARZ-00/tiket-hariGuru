@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://db.onlinewebfonts.com/c/3c1a4128f95e2109303b045eda4bfe8a?family=Etna" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
     <script src="app.js" defer></script>
     <title>Muttaqin Starways Scanner</title>
 </head>
@@ -17,13 +17,9 @@
     </div>
     
     <div class="scanner-wrapper">
-        <div class="video-container">
-            <canvas id="scanner-canvas" hidden></canvas>
-            <video id="preview" playsinline></video>
-            <div class="scan-region-highlight"></div>
-        </div>
+        <div id="interactive" class="viewport video-container"></div>
         
-        <div id="scanner-status" class="status-message">Initializing Camera...</div>
+        <div id="scanner-status" class="status-message">Initializing Camera Engine...</div>
         
         <div id="scan-result" class="result-card" style="display: none;">
             <h3>📋 PASSENGER VERIFIED</h3>
