@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://db.onlinewebfonts.com/c/3c1a4128f95e2109303b045eda4bfe8a?family=Etna" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <script src="app.js"></script>
+    <title>Tiket Masuk</title>
+</head>
+<body>
+<div class="ticket-container">
+    <div class='tiket'>
+      <img class='gambarTiket' src="Tiket Hari Guru.png" alt="Tiket Hari Guru">
+      <h3 id="nama">Original text</h3>
+      <h3 id="kerusi">Original text</h3>
+      <svg id="barcode"></svg>
+    </div>
+    <button id="download" onclick="downloadTiket()">Download Tiket</button>
+</div>
+</body>
+</html>

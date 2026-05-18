@@ -1,0 +1,293 @@
+/* Galaxy Glam Blue and Gold Theme */
+
+:root {
+  --galaxy-dark: #0b1428;
+  --galaxy-blue: #1a3a52;
+  --galaxy-lighter-blue: #2d5a7b;
+  --gold-primary: #d4af37;
+  --gold-accent: #f4d03f;
+  --white-text: #f5f5f5;
+  --text-dark: #0b1428;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #0b1428 0%, #1a3a52 50%, #0f1f38 100%);
+  background-attachment: fixed;
+  font-family: 'Etna', sans-serif;
+  color: var(--white-text);
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated stars background effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #d4af37, rgba(212, 175, 55, 0)),
+    radial-gradient(2px 2px at 60px 70px, #f4d03f, rgba(244, 208, 63, 0)),
+    radial-gradient(1px 1px at 50px 50px, #ffffff, rgba(255, 255, 255, 0)),
+    radial-gradient(1px 1px at 130px 80px, #ffffff, rgba(255, 255, 255, 0)),
+    radial-gradient(2px 2px at 90px 10px, #d4af37, rgba(212, 175, 55, 0));
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: twinkle 5s infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 40px;
+  background: rgba(26, 58, 82, 0.7);
+  border: 2px solid var(--gold-primary);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.3), 
+              0 0 60px rgba(26, 58, 82, 0.5),
+              inset 0 0 20px rgba(212, 175, 55, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.galaxy-header {
+  text-align: center;
+  margin-bottom: 40px;
+  border-bottom: 2px solid var(--gold-accent);
+  padding-bottom: 20px;
+}
+
+.galaxy-header h1 {
+  font-size: 32px;
+  color: var(--gold-accent);
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5),
+               0 0 20px rgba(61, 90, 123, 0.3);
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: var(--gold-primary);
+  letter-spacing: 1px;
+  font-weight: 300;
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: var(--gold-accent);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.form-group input {
+  padding: 12px 16px;
+  border: 2px solid var(--gold-primary);
+  background: rgba(11, 20, 40, 0.6);
+  color: var(--white-text);
+  border-radius: 8px;
+  font-family: 'Etna', sans-serif;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.1);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--gold-accent);
+  background: rgba(11, 20, 40, 0.8);
+  box-shadow: 0 0 15px rgba(244, 208, 63, 0.4),
+              inset 0 0 10px rgba(212, 175, 55, 0.1);
+}
+
+.form-group input::placeholder {
+  color: rgba(245, 245, 245, 0.5);
+}
+
+.generate-btn {
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  color: var(--text-dark);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3),
+              0 0 20px rgba(212, 175, 55, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Etna', sans-serif;
+}
+
+.generate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5),
+              0 0 30px rgba(212, 175, 55, 0.3);
+}
+
+.generate-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3),
+              0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+/* Ticket Styles */
+.tiket {
+  position: relative;
+  width: 304px;
+  height: 540px;
+  margin: 0 auto;
+  color: #000000;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.gambarTiket {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+#nama, #kerusi {
+  font-family: "Etna", sans-serif;
+  position: absolute;
+  margin: 0;
+  font-weight: 450;
+  text-transform: uppercase;
+}
+
+#nama {
+  left: 28px;
+  top: 287px;
+  font-size: 18px;
+}
+
+#kerusi {
+  left: 28px;
+  top: 329px;
+  font-size: 20px;
+}
+
+#barcode {
+  position: absolute;
+  bottom: 17px;
+  left: 23px;
+  width: 260px;
+  height: 77px;
+  display: block;
+}
+
+#download {
+  display: block;
+  margin: 30px auto 0;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  color: var(--text-dark);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3),
+              0 0 20px rgba(212, 175, 55, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Etna', sans-serif;
+}
+
+#download:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5),
+              0 0 30px rgba(212, 175, 55, 0.3);
+}
+
+#download:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Responsive Design */
+@media only screen and (max-width: 600px) {
+  .container {
+    padding: 25px;
+    margin: 20px auto;
+  }
+
+  .galaxy-header h1 {
+    font-size: 24px;
+  }
+
+  #nama {
+    left: 28px;
+    top: 291px;
+    font-size: 18px;
+  }
+
+  #kerusi {
+    left: 28px;
+    top: 333px;
+    font-size: 20px;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .container {
+    margin: 40px auto;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    margin: 50px auto;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .container {
+    max-width: 550px;
+    padding: 50px;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .container {
+    max-width: 600px;
+    padding: 60px;
+  }
+}

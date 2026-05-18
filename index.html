@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://db.onlinewebfonts.com/c/3c1a4128f95e2109303b045eda4bfe8a?family=Etna" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="app.js"></script>
+    <title>Penjanaan Tiket</title>
+</head>
+<body>
+<div class="container">
+    <div class="galaxy-header">
+        <h1>✨ MUTTAQIN STARWAYS ✨</h1>
+        <p class="subtitle">Space Travel Service</p>
+    </div>
+    
+    <div class="form-wrapper">
+        <div class="form-group">
+            <label for="fname">Nama Panggilan:</label>
+            <input type="text" id="text" placeholder="Cth: Raimi Mirza">
+        </div>
+        
+        <div class="form-group">
+            <label for="number">No. Kerusi:</label>
+            <input type="number" id="number" placeholder="Masukkan 2 digit (Cth: 07)">
+        </div>
+        
+        <button onclick="generateBarcode()" class="generate-btn">Order Now!</button>
+    </div>
+</div>
+</body>
+</html>
