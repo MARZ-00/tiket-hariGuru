@@ -109,98 +109,80 @@ window.onload = function() {
   }
 };
 
-// --- Scanner Engine Configuration ---
+// --- Quagga2 CODE128 Scanner Implementation ---
 
-let videoStream = null;
-let scanningActive = false;
-
-// Initialize scanner if the scanner layout components exist on current page load
 window.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById("preview") && document.getElementById("scanner-canvas")) {
-    startScanner();
+  // Initialize only if the target canvas interactive wrapper exists on the page
+  if (document.getElementById("interactive")) {
+    initBarcodeScanner();
   }
 });
 
-function startScanner() {
-  const video = document.getElementById("preview");
+function initBarcodeScanner() {
   const statusMsg = document.getElementById("scanner-status");
+  statusMsg.textContent = "Accessing spacecraft optical sensors...";
 
-  scanningActive = true;
-  statusMsg.textContent = "Requesting camera access...";
-
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-    .then((stream) => {
-      videoStream = stream;
-      video.srcObject = stream;
-      video.setAttribute("playsinline", true); // Required to prevent iOS fullscreen video
-      video.play();
-      statusMsg.textContent = "Scanning for standard barcode/QR assets...";
-      requestAnimationFrame(tickScannerProcessing);
-    })
-    .catch((err) => {
-      console.error("Camera access failed: ", err);
-      statusMsg.textContent = "Error: Camera access denied or unavailable.";
-    });
-}
-
-function tickScannerProcessing() {
-  const video = document.getElementById("preview");
-  const canvasElement = document.getElementById("scanner-canvas");
-  const statusMsg = document.getElementById("scanner-status");
-
-  if (!scanningActive) return;
-
-  if (video.readyState === video.HAVE_ENOUGH_DATA) {
-    const canvas = canvasElement.getContext("2d");
-    canvasElement.height = video.videoHeight;
-    canvasElement.width = video.videoWidth;
-    
-    // Draw current camera matrix frame to processing layer
-    canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-    const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
-    
-    // Search image array payload using jsQR
-    const code = jsQR(imageData.data, imageData.width, imageData.height, {
-      inversionAttempts: "dontInvert",
-    });
-
-    if (code && code.data) {
-      // Barcode recognized successfully
-      handleScannedData(code.data);
-      return; // Stop running the frame tick processor loop
+  Quagga.init({
+    inputStream: {
+      name: "Live",
+      type: "LiveStream",
+      target: document.querySelector('#interactive'), // Injects into our video container
+      constraints: {
+        width: 640,
+        height: 480,
+        facingMode: "environment" // Targets rear-facing smartphone camera
+      },
+    },
+    decoder: {
+      // Strictly isolate scan tracking patterns solely to CODE128 layouts
+      readers: ["code_128_reader"]
+    },
+    locate: true // Turns on the real-time locator matrix logic to locate the barcode
+  }, function (err) {
+    if (err) {
+      console.error("Quagga initialization failed:", err);
+      statusMsg.textContent = "Error: Camera access missing or blocked.";
+      return;
     }
-  }
-  
-  // Continue scanning if no code was detected in this frame
-  requestAnimationFrame(tickScannerProcessing);
+    console.log("Initialization complete. Ready to scan.");
+    statusMsg.textContent = "Align CODE128 barcode inside view box...";
+    Quagga.start();
+  });
+
+  // Attach the detection listener event catch callback
+  Quagga.onDetected(handleBarcodeDetected);
 }
 
-function handleScannedData(dataValue) {
-  scanningActive = false;
+function handleBarcodeDetected(result) {
+  if (!result || !result.codeResult) return;
+
+  const scannedCode = result.codeResult.code;
   
+  // Pause calculations to prevent duplicate background event spam execution loops
+  Quagga.offDetected();
+  Quagga.stop();
+
   const statusMsg = document.getElementById("scanner-status");
   const resultCard = document.getElementById("scan-result");
   const nameDisplay = document.getElementById("scanned-name");
   const seatDisplay = document.getElementById("scanned-seat");
 
-  statusMsg.textContent = "Barcode successfully decoded.";
+  statusMsg.textContent = "CODE128 Data successfully processed.";
 
-  // Splitting the combinedValue format: `${name}-${seat}`
-  const dataParts = dataValue.split("-");
+  // Splitting parsed compound dataset schema: `${name}-${seat}`
+  const dataParts = scannedCode.split("-");
   
   if (dataParts.length >= 2) {
-    const seatNumber = dataParts.pop(); // Last segment is the seat number
-    const passengerName = dataParts.join("-"); // Recombines if name itself contained dashes
+    const seatNumber = dataParts.pop(); // Grabs the assigned seat segment
+    const passengerName = dataParts.join("-"); // Recombines if the passenger name contained dashes
 
     nameDisplay.textContent = decodeURIComponent(passengerName);
     seatDisplay.textContent = decodeURIComponent(seatNumber);
   } else {
-    // Fallback display if barcode format does not contain explicit delimiter formatting
-    nameDisplay.textContent = dataValue;
-    seatDisplay.textContent = "Unknown";
+    nameDisplay.textContent = scannedCode;
+    seatDisplay.textContent = "N/A";
   }
 
-  // Display result panel cards
   resultCard.style.display = "block";
 }
 
@@ -209,7 +191,6 @@ function resetScanner() {
   document.getElementById("scanned-name").textContent = "-";
   document.getElementById("scanned-seat").textContent = "-";
   
-  scanningActive = true;
-  document.getElementById("scanner-status").textContent = "Scanning...";
-  requestAnimationFrame(tickScannerProcessing);
+  // Re-initialize and boot scanner streams fresh
+  initBarcodeScanner();
 }
