@@ -5,28 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://db.onlinewebfonts.com/c/3c1a4128f95e2109303b045eda4bfe8a?family=Etna" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script src="app.js" defer></script>
-    <title>MUTTAQIN STARWAYS - Ticket Scanner</title>
+    <title>Muttaqin Starways Scanner</title>
 </head>
 <body>
-<div class="container scanner-container">
+<div class="container">
     <div class="galaxy-header">
         <h1>✨ STARWAYS SCANNER ✨</h1>
-        <p class="subtitle">Gate Validation Terminal</p>
+        <p class="subtitle">Gate Entry Control System</p>
     </div>
-
+    
     <div class="scanner-wrapper">
-        <div id="reader"></div>
-    </div>
-
-    <div id="scan-result" class="result-card hidden">
-        <h3>🚀 Passenger Cleared</h3>
-        <div class="result-data">
-            <p><strong>Name:</strong> <span id="scanned-name">-</span></p>
-            <p><strong>Seat:</strong> <span id="scanned-seat">-</span></p>
+        <div class="video-container">
+            <canvas id="scanner-canvas" hidden></canvas>
+            <video id="preview" playsinline></video>
+            <div class="scan-region-highlight"></div>
         </div>
-        <button onclick="resetScanner()" class="generate-btn reset-btn">Scan Next Ticket</button>
+        
+        <div id="scanner-status" class="status-message">Initializing Camera...</div>
+        
+        <div id="scan-result" class="result-card" style="display: none;">
+            <h3>📋 PASSENGER VERIFIED</h3>
+            <div class="result-group">
+                <span class="result-label">Passenger Name:</span>
+                <span id="scanned-name" class="result-value">-</span>
+            </div>
+            <div class="result-group">
+                <span class="result-label">Seat Number:</span>
+                <span id="scanned-seat" class="result-value">-</span>
+            </div>
+            <button onclick="resetScanner()" class="generate-btn" style="margin-top: 15px; width: 100%;">Scan Next Ticket</button>
+        </div>
     </div>
 </div>
 </body>
