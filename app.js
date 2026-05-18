@@ -108,3 +108,72 @@ window.onload = function() {
     });
   }
 };
+
+-
+
+// --- SCANNER SYSTEM ENGINE ---
+let html5QrcodeScanner = null;
+
+function onScanSuccess(decodedText, decodedResult) {
+  // Your barcode generation format uses: `${name}-${seat}`
+  // Let's break it down securely back into its core properties
+  if (decodedText.includes("-")) {
+    const parts = decodedText.split("-");
+    
+    // Extract everything before the last dash as the name, and the final index as the seat
+    const seat = parts.pop();
+    const name = parts.join("-"); 
+
+    // Update readout DOM
+    document.getElementById("scanned-name").textContent = name;
+    document.getElementById("scanned-seat").textContent = seat;
+
+    // Show output display card
+    document.getElementById("scan-result").classList.remove("hidden");
+    
+    // Optional: Turn off camera tracking elements upon valid acquisition
+    if (html5QrcodeScanner) {
+      html5QrcodeScanner.clear().catch(err => console.error("Failed to clear scanner:", err));
+    }
+  } else {
+    alert(`Scanned data format unexpected: "${decodedText}". Make sure it's a Muttaqin Starways pass.`);
+  }
+}
+
+function onScanFailure(error) {
+  // Quietly handle ongoing lookups without printing verbose logs to the browser console
+}
+
+function resetScanner() {
+  // Hide data readout board
+  document.getElementById("scan-result").classList.add("hidden");
+  
+  // Reboot hardware loop binding
+  startScannerInstance();
+}
+
+function startScannerInstance() {
+  if (document.getElementById("reader")) {
+    html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader",
+      { 
+        fps: 15, 
+        qrbox: { width: 250, height: 150 }, // Adjusted proportions for wider linear 1D barcodes
+        aspectRatio: 1.777778
+      },
+      /* verbose= */ false
+    );
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+  }
+}
+
+// Modify or wrap your existing window.onload to gracefully hook scanner deployment updates safely
+const existingOnload = window.onload;
+window.onload = function() {
+  if (existingOnload) existingOnload();
+  
+  // Initialize scanner component structural initialization framework safely if on scanning terminal
+  if (document.getElementById("reader")) {
+    startScannerInstance();
+  }
+};
