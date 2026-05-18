@@ -242,6 +242,89 @@ body::before {
   box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
 }
 
+/* Scanner Page Specific Layouts */
+.scanner-container {
+  max-width: 600px;
+}
+
+.scanner-wrapper {
+  border: 2px dashed var(--gold-primary);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(11, 20, 40, 0.4);
+  margin-bottom: 25px;
+}
+
+/* Overriding html5-qrcode standard button elements to fit your theme */
+#reader button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+  color: var(--text-dark);
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 10px auto;
+  font-family: 'Etna', sans-serif;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+#reader select {
+  padding: 8px;
+  background: var(--galaxy-dark);
+  color: var(--white-text);
+  border: 1px solid var(--gold-primary);
+  border-radius: 6px;
+  margin: 10px;
+  font-family: 'Etna', sans-serif;
+}
+
+/* Result Card */
+.result-card {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text-dark);
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid var(--gold-accent);
+  box-shadow: 0 0 20px rgba(244, 208, 63, 0.3);
+  animation: slideIn 0.3s ease-out;
+}
+
+.result-card h3 {
+  color: #1a3a52;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  font-size: 20px;
+}
+
+.result-data p {
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+.result-data span {
+  font-weight: 600;
+  color: #0b1428;
+}
+
+.reset-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* Responsive Design */
 @media only screen and (max-width: 600px) {
   .container {
