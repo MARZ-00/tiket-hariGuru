@@ -111,8 +111,10 @@ window.onload = function() {
 
 // --- Quagga2 CODE128 Scanner Implementation ---
 
+// 1. Create a global Audio instance pointing to your uploaded file
+const scanSound = new Audio('ding-sound-effect_2.mp3');
+
 window.addEventListener('DOMContentLoaded', () => {
-  // Initialize only if the target canvas interactive wrapper exists on the page
   if (document.getElementById("interactive")) {
     initBarcodeScanner();
   }
@@ -126,18 +128,17 @@ function initBarcodeScanner() {
     inputStream: {
       name: "Live",
       type: "LiveStream",
-      target: document.querySelector('#interactive'), // Injects into our video container
+      target: document.querySelector('#interactive'),
       constraints: {
         width: 640,
         height: 480,
-        facingMode: "environment" // Targets rear-facing smartphone camera
+        facingMode: "environment"
       },
     },
     decoder: {
-      // Strictly isolate scan tracking patterns solely to CODE128 layouts
       readers: ["code_128_reader"]
     },
-    locate: true // Turns on the real-time locator matrix logic to locate the barcode
+    locate: true
   }, function (err) {
     if (err) {
       console.error("Quagga initialization failed:", err);
@@ -149,7 +150,6 @@ function initBarcodeScanner() {
     Quagga.start();
   });
 
-  // Attach the detection listener event catch callback
   Quagga.onDetected(handleBarcodeDetected);
 }
 
@@ -158,9 +158,14 @@ function handleBarcodeDetected(result) {
 
   const scannedCode = result.codeResult.code;
   
-  // Pause calculations to prevent duplicate background event spam execution loops
+  // Pause calculations immediately
   Quagga.offDetected();
   Quagga.stop();
+
+  // 2. PLAY THE DING SOUND HERE
+  scanSound.play().catch(err => {
+    console.log("Audio playback blocked until user interacts with the page:", err);
+  });
 
   const statusMsg = document.getElementById("scanner-status");
   const resultCard = document.getElementById("scan-result");
@@ -169,12 +174,11 @@ function handleBarcodeDetected(result) {
 
   statusMsg.textContent = "CODE128 Data successfully processed.";
 
-  // Splitting parsed compound dataset schema: `${name}-${seat}`
   const dataParts = scannedCode.split("-");
   
   if (dataParts.length >= 2) {
-    const seatNumber = dataParts.pop(); // Grabs the assigned seat segment
-    const passengerName = dataParts.join("-"); // Recombines if the passenger name contained dashes
+    const seatNumber = dataParts.pop();
+    const passengerName = dataParts.join("-");
 
     nameDisplay.textContent = decodeURIComponent(passengerName);
     seatDisplay.textContent = decodeURIComponent(seatNumber);
@@ -191,6 +195,5 @@ function resetScanner() {
   document.getElementById("scanned-name").textContent = "-";
   document.getElementById("scanned-seat").textContent = "-";
   
-  // Re-initialize and boot scanner streams fresh
   initBarcodeScanner();
 }
